@@ -20,3 +20,10 @@
 - 确认当前分支是 `feature/worktree-a`。
 - 不要切换分支，不要使用 `reset`，不要 `force push`，不要修改 `main`。
 - 只修改 `docs/worktree-notes.md`。
+
+### 给 worktree B 的 agent 提示词
+你现在只能在当前目录工作。先运行 pwd、git branch --show-current、git status。
+确认当前分支是 feature/worktree-b。
+不要切换分支，不要使用 reset，不要 force push，不要修改 main。
+只修改 docs/agent-prompts.md。
+完成后总结 diff，先不要 commit，等我确认。
