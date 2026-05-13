@@ -27,3 +27,6 @@
 不要切换分支，不要使用 reset，不要 force push，不要修改 main。
 只修改 docs/agent-prompts.md。
 完成后总结 diff，先不要 commit，等我确认。
+
+## 实验记录
+2026.5.13 by @zhanghaonanmaxx-del
