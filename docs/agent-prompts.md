@@ -1,29 +1,18 @@
-# Git Agent 协作提示词指南
+# 多 Agent 并行工作安全提示词 (Worktree 专项)
 
-## 1. 通用安全提示词 (开始工作前)
-请帮我：
-1. 检查当前 `git status`；
-2. 确认当前分支；
-3. 拉取远程最新版本；
-4. 如果有未提交修改，请先提醒我，不要覆盖。
+## 1. 环境识别指令
+在开始任何操作前，Agent 必须执行以下检查：
+* **当前路径**：运行 `pwd` 确认处于指定的 worktree 目录。
+* **分支确认**：运行 `git branch --show-current` 确认分支为 `feature/worktree-prompts-haonan`。
+* **状态检查**：运行 `git status` 确保工作区干净。
 
-## 2. 通用安全提示词 (提交前)
-请帮我查看当前 `diff`，用中文总结：
-1. 修改了哪些文件；
-2. 每个文件主要改了什么；
-3. 有没有看起来不该提交的文件；
-4. 建议的 commit message。
-注意：先不要提交。 若发现意外文件，请告知 agent 排除；若确认无误，请指令 agent 使用建议的 commit message 执行提交。
+## 2. 行为边界约束
+* **禁止切换**：严禁执行 `git checkout` 或 `git switch`。你只能在当前分配的 worktree 目录中工作。
+* **禁止越权**：严禁修改当前目录以外的任何文件。
+* **提交规范**：每次 commit 前必须展示 `git diff` 结果，并由人工确认修改范围是否符合预期。
+* **禁用危险命令**：严禁使用 `git reset --hard`、`git push -f` 或任何可能破坏主仓库历史的操作。
 
-## 3. Worktree 专用提示词 (示例)
-### 为 Worktree A 设置：
-- 确认当前分支是 `feature/worktree-a`。
-- 不要切换分支，不要使用 `reset`，不要 `force push`，不要修改 `main`。
-- 只修改 `docs/worktree-notes.md`。
+## 3. 并行协作逻辑
+当多个 Agent 同时工作时，每个 Agent 应被视为独立的实体，仅对自己的 worktree 路径负责。通过物理目录的隔离，确保代码修改不会产生冲突。
 
-### 给 worktree B 的 agent 提示词
-你现在只能在当前目录工作。先运行 pwd、git branch --show-current、git status。
-确认当前分支是 feature/worktree-b。
-不要切换分支，不要使用 reset，不要 force push，不要修改 main。
-只修改 docs/agent-prompts.md。
-完成后总结 diff，先不要 commit，等我确认。
+## 4. 为什么连接失败啊啊啊啊啊我要重新再试一次！！
