@@ -35,11 +35,37 @@
  
  
  
- 
- 
- 
-
-
-
-
-
+ # Manual Answers
+> 声明：以下回答由本人独立完成，未使用 AI 生成或润色。
+## 张浩楠
+### Q1. Git 和 GitHub 分别是什么？repo 和 remote 又是什么？
+Git是一个软件工具，而Github是专门用来存放Git生成的“版本记录”，即协作过程记录。repo是repository，指被Git管理的项目文件夹，remote指的是云端仓库，与本地相反。
+### Q2. commit 是什么？为什么 commit message 不能只写 update？
+commit是带说明的存档点，谁在什么时候做了什么。如果commit message只写update会让协作者不知道修改了哪里，以及为什么修改，在review的时候效率低下。
+### Q3. branch 是什么？main 分支代表什么？为什么不建议直接在 main 上改？
+branch是独立修改分支，从main新建feature分支。而main分支是团队认可的正式版本。直接在main上改可能会导致由于当前版本有错误漏洞而“不被认可”。所以在main修改之前应该新建独立修改分支，所有人review并且approve后，再合并到main分支中。
+### Q4. Pull Request 做了什么？reviewer 应该看什么，而不是只点 approve？
+Pull Request是一个有助于社交协作过程的功能，PR描述包括修改内容和需检查点（思路）等。reviewer需要知道改了什么，为什么改，改的意义，并留下comment
+### Q5. 你们组哪一个 PR 是你负责的？你做了哪些 commit？每个 commit 大概改了什么？
+总共负责了 5 个 PR（3 个已合并，2 个进行中），提交的 Commit 涵盖了基础提示词文档、冲突制造、Worktree 独立多区管理、以及实验审计日志的编写，以下是具体编号及名字：
+Contributor C: 补充 Agent 提示词实验日志
+#7 Contributor C: 提交 Agent 提示词文档
+#10 Worktree Operator: 补充 worktree 使用场景说明
+#11 Worktree Operator: 补充并行 Agent 安全提示词（和网络环境不稳定时的怒吼）
+#12 docs: B 认为 Git 的核心价值是多人协作
+### Q6. 你们组如何制造冲突？冲突发生在哪个文件？最终怎样合并两边意思？
+我们组通过“时间差”制造冲突。冲突发生在docs/shared-summary.md这个文件中。我和成员同时从一个共同的旧main节点分别拉出了feature/conflict-b和feature/conflict-a分支。我们在没有同步对方代码的情况下，各自在本地修改了完全相同的一行文字并推送。成员先将PR合并进 main，导致main的内容发生改变；当我的PR试图合并时，Git发现同一行代码版本冲突，撞车成功。但是最开始我们在各自进行修改后没有选择Merge，并没有撞车成功，后面借助AI提醒后才成功制造冲突并解决。
+### Q7. worktree 是什么？它和 branch 的关系是什么？
+worktree是同一个repo的多个本地工作目录（也许可以类比成草稿目录？）可以同时打开不同的分支。而branch是同一个repo的不同修改路线。用branch不方便同时打开两个分支的文件，但用worktree可以。
+### Q8. 什么时候“多个 branch”已经够了？什么时候需要“一台设备多个 worktree”？请各举一个例子。
+多个branch足够：任务是线型的/单个Agent
+需要一台设备多个worktree：多任务并行/多Agent同时工作
+### Q9. 如果你是老师，你如何审计一个 repo 是否真的通过 PR 合并，而不是直接改 main？
+验证Merge Commit的特征信息/查看并比对Pull Request历史记录
+### Q10. 使用 coding agent 做 Git 操作时，你最担心的一个危险动作是什么？你会怎样写提示词避免它？
+我担心在Agent修改代码时在未得到成员approve时因为无conflict就直接merge代码。
+相应提示词：
+"【权限隔离与协作红线】
+严禁执行合并：作为 Coding Agent，你的职责边界仅限于『在独立分支上修改代码』与『发起 Pull Request (PR)』。你绝对无权、也严禁执行任何 git merge main、git pull origin main:main 或调用 GitHub API 自动点击 Merge 的操作。
+禁止评估非技术冲突：即便系统提示 'This branch has no conflicts with the base branch'，这也仅代表 Git 物理层面没有代码重叠，不代表业务逻辑正确。
+强制等待人类审批：你在成功发起 PR 并指派 Reviewer 后，必须立刻终止任务流，并输出提示：『PR已成功创建，等待团队成员进行 Review 和 Approve，Agent 已退出。』 未得到人类明确的合并指令前，严禁擅自推进流程。"
